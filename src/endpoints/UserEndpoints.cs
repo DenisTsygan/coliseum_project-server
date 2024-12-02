@@ -4,7 +4,7 @@ public static class UserEndpoints
     {
         app.MapPost("register", Register);
         app.MapPost("login", Login);
-        app.MapGet("hol", () => "kakafka");
+        app.MapGet("list", GetList);
         return app;
 
     }
@@ -23,4 +23,13 @@ public static class UserEndpoints
         context.Response.Cookies.Append("v-appsettings-random-value", token);
         return Results.Ok(token);
     }
+
+    private static async Task<IResult> GetList(
+        UserService userService
+    )
+    {
+        var res = await userService.GetList();
+        return Results.Ok(res);
+    }
+
 }

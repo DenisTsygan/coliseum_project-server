@@ -39,4 +39,10 @@ public class UserService
 
         return token;
     }
+
+    public async Task<List<User>> GetList()
+    {
+        await Task.Delay(123);
+        return await _userRepository.GetList();
+    }
 }

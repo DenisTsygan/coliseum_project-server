@@ -3,7 +3,10 @@ public static class DataEndpoints
     public static IEndpointRouteBuilder MapDataEndpoints(this IEndpointRouteBuilder app)
     {
         var endpoints = app.MapGroup("api");
-        endpoints.MapGet("data", GetData).RequireAuthorization();
+        endpoints.MapGet("data", GetData).RequirePermissions(Permission.WATCH_DATA);
+        endpoints.MapGet("datalol", GetData).RequirePermissions(Permission.SEND_NOTIFICATION);
+        endpoints.MapGet("datalolkek", GetData).RequirePermissions(Permission.ADD_ACCOUNTANT);
+
         endpoints.MapGet("kil", () => "kakafka 1231 23");
         endpoints.MapGet("secure", () => "hahahahahahh its secured)))").RequireAuthorization();
         return app;
