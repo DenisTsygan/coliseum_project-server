@@ -1,25 +1,21 @@
-public class RolePermissionConfiguration
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+public partial class RolePermissionConfiguration
+    : IEntityTypeConfiguration<RolePermissionEntity>
 {
     private readonly AuthorizationOptions _authorizationOptions;
     public RolePermissionConfiguration(AuthorizationOptions authorizationOptions)
     {
         _authorizationOptions = authorizationOptions;
-        this.Configure();
     }
-
-    public void Configure()//TODO add to DB
+    public void Configure(EntityTypeBuilder<RolePermissionEntity> builder)
     {
-        var items = ParseRolePermissions();
-        Console.WriteLine("Configure Configure");
-        foreach (var item in items)
-        {
-            Console.WriteLine("ParseRolePermissions");
+        builder.HasKey(r => new { r.RoleId, r.PermissionId });
 
-            Console.WriteLine(item.ToString());
-            Console.WriteLine(item.RoleId);
-            Console.WriteLine(item.PermissionId);
-        }
+        builder.HasData(ParseRolePermissions());
     }
+
     public RolePermissionEntity[] ParseRolePermissions()
     {
         return _authorizationOptions.RolePermissions

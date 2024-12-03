@@ -6,6 +6,6 @@ public class RoleEntity
 
     public ICollection<PermissionEntity> Permissions { get; set; } = [];// на каждый ендпоинт свое разрешение 
 
-    public ICollection<User> Users { get; set; } = [];//связь многии ко многим
+    public ICollection<UserEntity> Users { get; set; } = [];//связь многии ко многим
 
 }

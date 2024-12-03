@@ -13,7 +13,7 @@ public class JwtProvider : IJwtProvider
     {
         _jwtOpions = options.Value;
     }
-    public string GenerateToken(User user)
+    public string GenerateToken(UserEntity user)
     {
         Console.WriteLine($"GenerateToken User id {user.Id}");
         Claim[] claims = [

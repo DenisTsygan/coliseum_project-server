@@ -1,5 +1,5 @@
 public interface IJwtProvider
 {
-    string GenerateToken(User user);
+    string GenerateToken(UserEntity user);
 
 }

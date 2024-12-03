@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Components.Forms;
 
 public interface IUserRepository
 {
-    Task Add(User user);
+    Task Add(UserEntity user);
 
-    Task<User> GetByEmail(string email);
+    Task<UserEntity> GetByEmail(string email);
 
     Task<HashSet<Permission>> GetUserPermissions(Guid userId);
 

@@ -18,7 +18,7 @@ public class UserService
     {
         var hashedPassword = _passwordHasher.Generate(password);
 
-        var user = User.Create(Guid.NewGuid(), userName, hashedPassword, email);
+        var user = UserEntity.Create(Guid.NewGuid(), userName, hashedPassword, email);
         await _userRepository.Add(user);
     }
 

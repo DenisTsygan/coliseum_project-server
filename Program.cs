@@ -1,10 +1,20 @@
+using AutoMapper;
 using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-var services = builder.Services;
 var configuration = builder.Configuration;
+var services = builder.Services;
+
+var connectionString = configuration.GetConnectionString("AppDbConnectionString");
+services.AddDbContext<ServiceDbContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))//"8.0.20"
+);
+
 services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(AuthorizationOptions)));
+
+services.AddAutoMapper(typeof(UserMapperProfile));
 
 services.AddScoped<IPasswordHasher, PasswordHasher>();
 services.AddScoped<UserService>();
@@ -12,7 +22,6 @@ services.AddScoped<IJwtProvider, JwtProvider>();
 services.AddScoped<IUserRepository, UserRepository>();
 
 services.AddApiAuthentification(configuration);
-TestDb.GenerateData(configuration);
 
 var app = builder.Build();
 

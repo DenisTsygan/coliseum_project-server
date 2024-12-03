@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  service-db:
+    image: mysql:8.0.20
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_123
+      MYSQL_USER: admin_db
+      MYSQL_PASSWORD: lol228
+      MYSQL_DATABASE: my_db
+    ports:
+      - 3306:3306
+
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://service-db:3306/notebook_db_v1
+#docker compose up -d
+
+# docker exec -it ec50e6a74ca0 mysql -u admin_db -p
+#CREATE DATABASE notebook_db_v1;
+#CREATE USER 'admin_notebook_db' IDENTIFIED BY 'poiuy228';
+#GRANT ALL PRIVILEGES ON notebook_db_v1.* TO 'admin_notebook_db';
+#FLUSH PRIVILEGES;
