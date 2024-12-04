@@ -18,7 +18,7 @@ public class UserRepository : IUserRepository
     public async Task Add(UserEntity user)
     {
         var roleEntiy = await _dbContext.Roles
-            .SingleOrDefaultAsync(r => r.Id == (int)Role.Accountant)
+            .SingleOrDefaultAsync(r => r.Id == (int)Role.Accountant)//TODO change role
             ?? throw new Exception("InvalidOperationExeption");
 
         var userEntity = new UserEntity()
@@ -38,7 +38,11 @@ public class UserRepository : IUserRepository
         return await _dbContext.Users
             .AsNoTracking().FirstOrDefaultAsync(u => u.Email == email) ?? throw new Exception("Not found user");
     }
-
+    public async Task<UserEntity> GetById(Guid id)
+    {
+        return await _dbContext.Users
+            .AsNoTracking().FirstOrDefaultAsync(u => u.Id == id) ?? throw new Exception("Not found user");
+    }
 
     public async Task<HashSet<Permission>> GetUserPermissions(Guid userId)
     {
@@ -61,6 +65,8 @@ public class UserRepository : IUserRepository
     {
         var userEntities = await _dbContext.Users
             .AsNoTracking()
+            .Include(u => u.Roles)
+            .ThenInclude(r => r.Permissions)
             .ToListAsync();
 
         return _mapper.Map<List<User>>(userEntities);

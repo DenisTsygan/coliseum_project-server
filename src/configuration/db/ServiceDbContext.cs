@@ -9,6 +9,8 @@ public class ServiceDbContext(DbContextOptions<ServiceDbContext> options,
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<RoleEntity> Roles { get; set; }
 
+    public DbSet<RefreshSessionEntity> RefreshSessions { get; set; }
+
     //public DbSet<PermissionEntity> Permissions { get; set; }
 
     //public DbSet<Tokenntity> Tokens { get; set; }
@@ -17,6 +19,8 @@ public class ServiceDbContext(DbContextOptions<ServiceDbContext> options,
         modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
         modelBuilder.ApplyConfiguration(new PermissionConfiguration());
+        modelBuilder.ApplyConfiguration(new RefreshSessionConfiguration());
+
         //modelBuilder.ApplyConfiguration(new TokenConfiguration());
         modelBuilder.ApplyConfiguration(new RolePermissionConfiguration(authOptions.Value));
 

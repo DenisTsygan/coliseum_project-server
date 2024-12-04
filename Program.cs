@@ -20,6 +20,7 @@ services.AddScoped<IPasswordHasher, PasswordHasher>();
 services.AddScoped<UserService>();
 services.AddScoped<IJwtProvider, JwtProvider>();
 services.AddScoped<IUserRepository, UserRepository>();
+services.AddScoped<IRefreshSessionRepository, RefreshSessionRepository>();
 
 services.AddApiAuthentification(configuration);
 

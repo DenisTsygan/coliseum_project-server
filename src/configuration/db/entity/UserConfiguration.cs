@@ -59,6 +59,14 @@ public class PermissionConfiguration : IEntityTypeConfiguration<PermissionEntity
     }
 }
 
+public class RefreshSessionConfiguration : IEntityTypeConfiguration<RefreshSessionEntity>
+{
+    public void Configure(EntityTypeBuilder<RefreshSessionEntity> builder)
+    {
+        builder.HasKey(rs => rs.Id);
+    }
+}
+
 /*public class TokenConfiguration : IEntityTypeConfiguration<Tokenntity>
 {
     public void Configure(EntityTypeBuilder<Tokenntity> builder)

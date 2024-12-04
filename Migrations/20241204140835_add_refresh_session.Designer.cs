@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace test.Migrations
 {
     [DbContext(typeof(ServiceDbContext))]
-    [Migration("20241203221302_initial")]
-    partial class initial
+    [Migration("20241204140835_add_refresh_session")]
+    partial class add_refresh_session
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,6 +51,38 @@ namespace test.Migrations
                             Id = 3,
                             Name = "SEND_NOTIFICATION"
                         });
+                });
+
+            modelBuilder.Entity("RefreshSessionEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("ExpiresIn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("FingerPrint")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Ip")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("RefreshToken")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("UserAgent")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RefreshSessions");
                 });
 
             modelBuilder.Entity("RoleEntity", b =>

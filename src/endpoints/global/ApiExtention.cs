@@ -35,14 +35,22 @@ public static class ApiExtention
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions!.SecretKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions!.SecretKey)),
+                    ClockSkew = TimeSpan.Zero//По умолчанию, в ASP.NET Core добавляется временное смещение (ClockSkew) для обработки возможных рассинхронизаций между сервером и клиентом. По умолчанию оно составляет 5
                 };
 
                 options.Events = new JwtBearerEvents
                 {
                     OnMessageReceived = context =>
                     {
-                        context.Token = context.Request.Cookies["v-appsettings-random-value"];
+                        var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
+
+                        if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                        {
+                            context.Token = authHeader["Bearer ".Length..].Trim();
+                            Console.WriteLine("context.Token = " + authHeader["Bearer ".Length..].Trim());
+                        }
+                        //context.Token = context.Request.Cookies["v-appsettings-random-value"];
                         return Task.CompletedTask;
                     }
                 };
