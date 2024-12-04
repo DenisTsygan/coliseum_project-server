@@ -8,4 +8,5 @@ public interface IRefreshSessionRepository
 
     Task DeleteAllByUserId(Guid userId);
 
+    Task<List<RefreshSessionEntity>> GetList();
 }

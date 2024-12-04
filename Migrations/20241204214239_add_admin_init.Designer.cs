@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace test.Migrations
 {
     [DbContext(typeof(ServiceDbContext))]
-    [Migration("20241204140835_add_refresh_session")]
-    partial class add_refresh_session
+    [Migration("20241204214239_add_admin_init")]
+    partial class add_admin_init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,6 +50,11 @@ namespace test.Migrations
                         {
                             Id = 3,
                             Name = "SEND_NOTIFICATION"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "WATCH_SESSIONS"
                         });
                 });
 
@@ -134,6 +139,11 @@ namespace test.Migrations
                         },
                         new
                         {
+                            RoleId = 1,
+                            PermissionId = 4
+                        },
+                        new
+                        {
                             RoleId = 2,
                             PermissionId = 2
                         },
@@ -165,6 +175,15 @@ namespace test.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000001"),
+                            Email = "admin",
+                            PasswordHash = "$2a$11$Y.mMkfe88KMpuJ7b5ryogOz53ykIVfHMn7ga7idiSW4p8ccnf2Sqe",
+                            UserName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("UserRoleEntity", b =>
@@ -180,6 +199,13 @@ namespace test.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoleEntity");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            UserId = new Guid("00000000-0000-0000-0000-000000000001")
+                        });
                 });
 
             modelBuilder.Entity("RolePermissionEntity", b =>

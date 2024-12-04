@@ -29,4 +29,9 @@ public class RefreshSessionRepository : IRefreshSessionRepository
         return await _dbContext.RefreshSessions
             .AsNoTracking().FirstOrDefaultAsync(rs => rs.RefreshToken.ToString() == refreshToken) ?? throw new Exception("Not found RefreshSession");
     }
+
+    public async Task<List<RefreshSessionEntity>> GetList()
+    {
+        return await _dbContext.RefreshSessions.AsNoTracking().ToListAsync();
+    }
 }

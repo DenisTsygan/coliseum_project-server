@@ -10,4 +10,6 @@ public interface IUserRepository
 
     Task<List<User>> GetList();
 
+    Task<Dictionary<Guid, User>> GetListByIds(HashSet<Guid> guids);
+
 }

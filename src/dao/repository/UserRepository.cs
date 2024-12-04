@@ -100,5 +100,15 @@ public class UserRepository : IUserRepository
             .ToListAsync();
     }
 
+    public async Task<Dictionary<Guid, User>> GetListByIds(HashSet<Guid> guids)
+    {
+        var userEntities = await _dbContext.Users
+        .AsNoTracking()
+        .Include(u => u.Roles)
+        .ThenInclude(r => r.Permissions)
+        .Where(u => guids.Contains(u.Id))
+        .ToDictionaryAsync(u => u.Id);
 
+        return _mapper.Map<Dictionary<Guid, User>>(userEntities);
+    }
 }

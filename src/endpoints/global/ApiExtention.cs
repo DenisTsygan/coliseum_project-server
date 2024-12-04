@@ -9,6 +9,7 @@ public static class ApiExtention
     {
         app.MapUsersEndpoints();
         app.MapDataEndpoints();
+        app.MapAdminEndpoints();
     }
 
     public static void AddApiAuthentification(

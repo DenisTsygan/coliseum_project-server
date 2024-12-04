@@ -18,6 +18,7 @@ services.AddAutoMapper(typeof(UserMapperProfile));
 
 services.AddScoped<IPasswordHasher, PasswordHasher>();
 services.AddScoped<UserService>();
+services.AddScoped<RefreshSessionService>();
 services.AddScoped<IJwtProvider, JwtProvider>();
 services.AddScoped<IUserRepository, UserRepository>();
 services.AddScoped<IRefreshSessionRepository, RefreshSessionRepository>();

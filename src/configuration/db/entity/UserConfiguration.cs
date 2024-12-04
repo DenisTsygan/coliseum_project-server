@@ -3,6 +3,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
 {
+    private readonly AuthorizationOptions _authorizationOptions;
+    private readonly IPasswordHasher _passwordHasher;
+
+    public UserConfiguration(AuthorizationOptions authorizationOptions, IPasswordHasher passwordHasher)
+    {
+        _authorizationOptions = authorizationOptions;
+        _passwordHasher = passwordHasher;
+    }
+
     public void Configure(EntityTypeBuilder<UserEntity> builder)
     {
         builder.HasKey(u => u.Id);
@@ -14,9 +23,36 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
                 r => r.HasOne<UserEntity>().WithMany().HasForeignKey(u => u.UserId)
             )
             ;
+        var hashedPassword = _passwordHasher.Generate(_authorizationOptions.Admin.Password);
+
+        var adminId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+
+        builder.HasData(new UserEntity
+        {
+            Id = adminId,
+            Email = _authorizationOptions.Admin.UserName,
+            PasswordHash = hashedPassword,
+            UserName = _authorizationOptions.Admin.UserName,
+
+        });
+
     }
 }
 //TODO in other files
+public class UserRoleConfiguration : IEntityTypeConfiguration<UserRoleEntity>
+{
+    public void Configure(EntityTypeBuilder<UserRoleEntity> builder)
+    {
+        var adminId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+        builder.HasData(new UserRoleEntity
+        {
+            UserId = adminId,
+            RoleId = (int)Role.Admin // Указываем ID роли
+        });
+
+    }
+}
+
 public class RoleConfiguration : IEntityTypeConfiguration<RoleEntity>
 {
     public void Configure(EntityTypeBuilder<RoleEntity> builder)

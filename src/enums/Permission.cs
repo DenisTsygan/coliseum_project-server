@@ -2,5 +2,6 @@ public enum Permission
 {
     ADD_ACCOUNTANT = 1,
     WATCH_DATA = 2,
-    SEND_NOTIFICATION = 3
+    SEND_NOTIFICATION = 3,
+    WATCH_SESSIONS = 4
 }
