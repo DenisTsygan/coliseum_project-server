@@ -3,6 +3,18 @@ using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:5173");
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+        policy.AllowCredentials();
+    });
+});
+
 var configuration = builder.Configuration;
 var services = builder.Services;
 
@@ -39,6 +51,7 @@ app.UseCookiePolicy(new CookiePolicyOptions
 app.UseAuthentication();
 app.UseAuthorization();
 app.AddMappedEndoints();
+app.UseCors();
 //TODO entity Framework core - workwith bd
 //TODO add exeption midleware
 //app.UseMiddleware<ExeptionMidleware>()

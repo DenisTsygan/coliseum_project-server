@@ -8,3 +8,9 @@ Login Accountant
     "password":"12321321",
     "fingerPrint":"loploplop"
 }
+Login Admin
+{
+    "email":"admin",
+    "password":"lol123",
+    "fingerPrint":"loploplop"
+}
