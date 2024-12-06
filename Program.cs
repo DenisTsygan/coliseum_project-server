@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +53,27 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.AddMappedEndoints();
 app.UseCors();
+app.UseStaticFiles();
+
+// Настройка маршрута для SPA-приложения React
+app.MapWhen(context => context.Request.Path.StartsWithSegments("/admin"), adminApp =>
+{
+    adminApp.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/admin")),
+        RequestPath = "/admin"
+    });
+
+    adminApp.Run(async context =>
+    {
+        // Если путь не ведет к файлу, возвращаем index.html
+        context.Response.ContentType = "text/html";
+        await context.Response.SendFileAsync(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/admin", "index.html"));
+    });
+});
+
+
 //TODO entity Framework core - workwith bd
 //TODO add exeption midleware
 //app.UseMiddleware<ExeptionMidleware>()
