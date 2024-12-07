@@ -4,8 +4,10 @@ public static class AdminEndpoints
 {
     public static IEndpointRouteBuilder MapAdminEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("admin-page", AdminPage);//TODO show html page
-        app.MapGet("sessions", GetListSessions).RequirePermissions(Permission.WATCH_SESSIONS);
+        var endpoints = app.MapGroup("api");
+        //app.MapGet("admin-page", AdminPage);//TODO show html page
+        endpoints.MapGet("sessions", GetListSessions).RequirePermissions(Permission.WATCH_SESSIONS);
+        endpoints.MapPost("logout", LogoutByRSId).RequirePermissions(Permission.WATCH_SESSIONS);
         return app;
 
     }
@@ -22,5 +24,15 @@ public static class AdminEndpoints
     {
         var res = await refreshSessionService.GetListSessions();
         return Results.Ok(res);
+    }
+
+    private static async Task<IResult> LogoutByRSId(
+        LogoutByRSIdRequest request,
+        UserService userService,
+        HttpContext context
+    )
+    {
+        await userService.LogoutByRefres(request.Rsid);
+        return Results.Ok("User is logged out from current session.");
     }
 }

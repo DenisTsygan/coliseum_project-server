@@ -5,6 +5,7 @@ public interface IRefreshSessionRepository
     Task<RefreshSessionEntity> GetByRefreshToken(string refreshToken);
 
     Task Delete(RefreshSessionEntity refreshSessionEntity);
+    Task DeleteById(string refreshSessionId);
 
     Task DeleteAllByUserId(Guid userId);
 

@@ -94,6 +94,11 @@ public class UserService
         await _refreshSessionRepository.Delete(oldRefreshSession);
     }
 
+    public async Task LogoutByRefres(string rsid)
+    {
+        await _refreshSessionRepository.DeleteById(rsid);
+    }
+
     public async Task LogoutAllSession(string token)
     {
         var tokenGuid = _jwtProvider.GetClaimFromToken(token, CustomClaims.RefreshSessionId);

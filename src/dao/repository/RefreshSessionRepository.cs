@@ -19,6 +19,11 @@ public class RefreshSessionRepository : IRefreshSessionRepository
         await _dbContext.RefreshSessions.Where(rs => rs.Id == refreshSessionEntity.Id).ExecuteDeleteAsync();
     }
 
+    public async Task DeleteById(string refreshSessionId)
+    {
+        await _dbContext.RefreshSessions.Where(rs => rs.Id.ToString() == refreshSessionId).ExecuteDeleteAsync();
+    }
+
     public async Task DeleteAllByUserId(Guid userId)
     {
         await _dbContext.RefreshSessions.Where(rs => rs.UserId == userId).ExecuteDeleteAsync();
