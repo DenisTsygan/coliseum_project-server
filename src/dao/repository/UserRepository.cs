@@ -15,10 +15,10 @@ public class UserRepository : IUserRepository
     public static List<UserEntity> users = new List<UserEntity>();
 
 
-    public async Task Add(UserEntity user)
+    public async Task<User> Add(UserEntity user, int roleId)
     {
         var roleEntiy = await _dbContext.Roles
-            .SingleOrDefaultAsync(r => r.Id == (int)Role.Accountant)//TODO change role
+            .SingleOrDefaultAsync(r => r.Id == roleId)//TODO change role (int)Role.Accountant
             ?? throw new Exception("InvalidOperationExeption");
 
         var userEntity = new UserEntity()
@@ -32,6 +32,8 @@ public class UserRepository : IUserRepository
 
         await _dbContext.Users.AddAsync(userEntity);
         await _dbContext.SaveChangesAsync();
+
+        return _mapper.Map<User>(userEntity);
     }
     public async Task<UserEntity> GetByEmail(string email)
     {

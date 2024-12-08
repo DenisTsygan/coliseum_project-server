@@ -1,6 +1,6 @@
 public interface IUserRepository
 {
-    Task Add(UserEntity user);
+    Task<User> Add(UserEntity user, int roleId);
 
     Task<UserEntity> GetByEmail(string email);
 

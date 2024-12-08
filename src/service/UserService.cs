@@ -18,12 +18,12 @@ public class UserService
         _refreshSessionRepository = refreshSessionRepository;
         _jwtProvider = jwtProvider;
     }
-    public async Task Register(string userName, string email, string password)
+    public async Task<User> Register(string userName, string email, string password, int roleId)
     {
         var hashedPassword = _passwordHasher.Generate(password);
 
         var user = UserEntity.Create(Guid.NewGuid(), userName, hashedPassword, email);
-        await _userRepository.Add(user);
+        return await _userRepository.Add(user, roleId);
     }
 
     public async Task<UserServiceLoginResponce> Login(string email, string password, string userAgent, string fingerprint, string ip)
