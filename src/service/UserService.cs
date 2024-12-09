@@ -5,10 +5,14 @@ public class UserService
     private readonly IUserRepository _userRepository;
     private readonly IRefreshSessionRepository _refreshSessionRepository;
 
+    private readonly IRoleRepository _roleRepository;
+
+
     private readonly IJwtProvider _jwtProvider;
 
     public UserService(IUserRepository userRepository,
         IRefreshSessionRepository refreshSessionRepository,
+        IRoleRepository roleRepository,
         IPasswordHasher passwordHasher,
         IJwtProvider jwtProvider
         )
@@ -16,6 +20,7 @@ public class UserService
         _passwordHasher = passwordHasher;
         _userRepository = userRepository;
         _refreshSessionRepository = refreshSessionRepository;
+        _roleRepository = roleRepository;
         _jwtProvider = jwtProvider;
     }
     public async Task<User> Register(string userName, string email, string password, int roleId)
@@ -122,7 +127,13 @@ public class UserService
 
     public async Task<List<User>> GetList()
     {
-        await Task.Delay(123);
         return await _userRepository.GetList();
     }
+
+    public async Task<List<RoleEntity>> GetListRoles()//TODO in another repo , service
+    {
+        return await _roleRepository.GetList();
+    }
+
+
 }

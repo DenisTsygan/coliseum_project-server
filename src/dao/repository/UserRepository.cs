@@ -12,8 +12,6 @@ public class UserRepository : IUserRepository
         _dbContext = dbContext;
         _mapper = mapper;
     }
-    public static List<UserEntity> users = new List<UserEntity>();
-
 
     public async Task<User> Add(UserEntity user, int roleId)
     {
@@ -32,8 +30,12 @@ public class UserRepository : IUserRepository
 
         await _dbContext.Users.AddAsync(userEntity);
         await _dbContext.SaveChangesAsync();
-
-        return _mapper.Map<User>(userEntity);
+        var userEntityFromDb = await _dbContext.Users
+            .AsNoTracking()
+             .Include(u => u.Roles)
+            .ThenInclude(r => r.Permissions)
+            .FirstOrDefaultAsync(u => u.Id == user.Id);
+        return _mapper.Map<User>(userEntityFromDb);
     }
     public async Task<UserEntity> GetByEmail(string email)
     {

@@ -35,6 +35,7 @@ services.AddScoped<RefreshSessionService>();
 services.AddScoped<IJwtProvider, JwtProvider>();
 services.AddScoped<IUserRepository, UserRepository>();
 services.AddScoped<IRefreshSessionRepository, RefreshSessionRepository>();
+services.AddScoped<IRoleRepository, RoleRepository>();
 
 services.AddApiAuthentification(configuration);
 

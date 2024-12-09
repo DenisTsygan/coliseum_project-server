@@ -8,8 +8,9 @@ public static class AdminEndpoints
         endpoints.MapGet("sessions", GetListSessions).RequirePermissions(Permission.WATCH_SESSIONS);
         endpoints.MapPost("logout", LogoutByRSId).RequirePermissions(Permission.WATCH_SESSIONS);
         endpoints.MapGet("users", GetList).RequirePermissions(Permission.ADD_ACCOUNTANT);
+        endpoints.MapGet("roles", GetListRoles).RequirePermissions(Permission.ADD_ACCOUNTANT);
         endpoints.MapDelete("users/{userId}", DeleteUserById).RequirePermissions(Permission.ADD_ACCOUNTANT);//TODO permissions on every request?
-        endpoints.MapPost("register", Register);
+        endpoints.MapPost("register", Register).RequirePermissions(Permission.ADD_ACCOUNTANT); ;
         return app;
 
     }
@@ -37,6 +38,14 @@ public static class AdminEndpoints
     )
     {
         var res = await userService.GetList();
+        return Results.Ok(res);
+    }
+
+    private static async Task<IResult> GetListRoles(
+        UserService userService
+    )
+    {
+        var res = await userService.GetListRoles();
         return Results.Ok(res);
     }
 
