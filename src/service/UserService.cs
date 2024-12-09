@@ -110,6 +110,16 @@ public class UserService
         await _refreshSessionRepository.DeleteAllByUserId(oldRefreshSession.UserId);
     }
 
+    public async Task LogoutAllSessionByUserId(Guid userId)
+    {
+        await _refreshSessionRepository.DeleteAllByUserId(userId);
+    }
+
+    public async Task DeleteByUserId(Guid userId)
+    {
+        await _userRepository.DeleteById(userId);
+    }
+
     public async Task<List<User>> GetList()
     {
         await Task.Delay(123);

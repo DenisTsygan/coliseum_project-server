@@ -113,4 +113,8 @@ public class UserRepository : IUserRepository
 
         return _mapper.Map<Dictionary<Guid, User>>(userEntities);
     }
+    public async Task DeleteById(Guid userId)
+    {
+        await _dbContext.Users.Where(u => u.Id == userId).ExecuteDeleteAsync();
+    }
 }

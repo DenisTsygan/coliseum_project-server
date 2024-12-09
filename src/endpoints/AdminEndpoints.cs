@@ -8,6 +8,7 @@ public static class AdminEndpoints
         endpoints.MapGet("sessions", GetListSessions).RequirePermissions(Permission.WATCH_SESSIONS);
         endpoints.MapPost("logout", LogoutByRSId).RequirePermissions(Permission.WATCH_SESSIONS);
         endpoints.MapGet("users", GetList).RequirePermissions(Permission.ADD_ACCOUNTANT);
+        endpoints.MapDelete("users/{userId}", DeleteUserById).RequirePermissions(Permission.ADD_ACCOUNTANT);//TODO permissions on every request?
         endpoints.MapPost("register", Register);
         return app;
 
@@ -37,6 +38,26 @@ public static class AdminEndpoints
     {
         var res = await userService.GetList();
         return Results.Ok(res);
+    }
+
+    private static async Task<IResult> DeleteUserById(
+       string userId,
+       UserService userService,
+       HttpContext context
+   )
+    {
+        var isGuid = Guid.TryParse(userId, out var uid);
+        if (isGuid)
+        {
+            await userService.LogoutAllSessionByUserId(uid);
+            await userService.DeleteByUserId(uid);
+        }
+        else
+        {
+            throw new Exception("Param userid is not guid");
+        }
+        //await userService.LogoutByRefres(request.Rsid);
+        return Results.Ok("User and sessions is deleted.");
     }
 
     private static async Task<IResult> Register(RegisterUserRequest request, UserService authUserService)
