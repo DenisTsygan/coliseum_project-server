@@ -1,0 +1,1 @@
+import{d as e,u as r,c as n,o as s}from"./index-B-ymyeCQ.js";const u=e({__name:"ErrorPage",setup(t){const o=r();return console.log(o),console.log(o.params),(a,c)=>(s(),n("h1",null,"Error"))}});export{u as default};

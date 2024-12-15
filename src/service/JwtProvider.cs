@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,10 +20,16 @@ public class JwtProvider : IJwtProvider
 
     public string GenerateAccessToken(UserEntity user)
     {
+        string roles = "";
+        if (user.Roles is not null)
+        {
+            roles = JsonSerializer.Serialize(user.Roles);//TODO serialize first letter variable on lover case and fix in coliseum_project_frontend->UserInfo->IRole->IPermission
+        }
         Claim[] claims = [
             new(CustomClaims.UserId, user.Id.ToString()),
             new(CustomClaims.UserName, user.UserName.ToString()),
-            new(CustomClaims.Email, user.Email.ToString())
+            new(CustomClaims.Email, user.Email.ToString()),
+            new(CustomClaims.Roles, roles)
         ];
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(

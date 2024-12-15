@@ -40,12 +40,18 @@ public class UserRepository : IUserRepository
     public async Task<UserEntity> GetByEmail(string email)
     {
         return await _dbContext.Users
-            .AsNoTracking().FirstOrDefaultAsync(u => u.Email == email) ?? throw new Exception("Not found user");
+            .AsNoTracking()
+            .Include(u => u.Roles)
+            .ThenInclude(r => r.Permissions)
+            .FirstOrDefaultAsync(u => u.Email == email) ?? throw new Exception("Not found user");
     }
     public async Task<UserEntity> GetById(Guid id)
     {
         return await _dbContext.Users
-            .AsNoTracking().FirstOrDefaultAsync(u => u.Id == id) ?? throw new Exception("Not found user");
+            .AsNoTracking()
+            .Include(u => u.Roles)
+            .ThenInclude(r => r.Permissions)
+            .FirstOrDefaultAsync(u => u.Id == id) ?? throw new Exception("Not found user");
     }
 
     public async Task<HashSet<Permission>> GetUserPermissions(Guid userId)

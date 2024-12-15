@@ -74,8 +74,23 @@ app.MapWhen(context => context.Request.Path.StartsWithSegments("/admin"), adminA
     });
 });
 
+app.MapWhen(context => context.Request.Path.StartsWithSegments("/client"), clientApp =>
+{
+    clientApp.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/client")),
+        RequestPath = "/client"
+    });
 
-//TODO entity Framework core - workwith bd
+    clientApp.Run(async context =>
+    {
+        // Если путь не ведет к файлу, возвращаем index.html
+        context.Response.ContentType = "text/html";
+        await context.Response.SendFileAsync(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/client", "index.html"));
+    });
+});
+
 //TODO add exeption midleware
 //app.UseMiddleware<ExeptionMidleware>()
 
