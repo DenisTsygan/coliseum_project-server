@@ -103,11 +103,65 @@ public class RefreshSessionConfiguration : IEntityTypeConfiguration<RefreshSessi
     }
 }
 
-/*public class TokenConfiguration : IEntityTypeConfiguration<Tokenntity>
+public class ElectricityConsumedMounthEntityConfiguration : IEntityTypeConfiguration<ElectricityConsumedMounthEntity>
 {
-    public void Configure(EntityTypeBuilder<Tokenntity> builder)
+    public void Configure(EntityTypeBuilder<ElectricityConsumedMounthEntity> builder)
     {
-        builder.HasKey(t => t.Id);
-        builder.HasOne(t => t.User).WithMany().HasForeignKey(t => t.UserId);
+        builder.HasKey(ecm => ecm.Id);
+        builder.Property(ecm => ecm.Name)
+            .IsRequired()
+            .HasMaxLength(100);
+        builder.Property(ecm => ecm.PeriodDate)
+                   .IsRequired()
+                   .HasMaxLength(7); // Формат "MM-yyyy"
+
+        builder.HasMany(ecm => ecm.ElectricyConsumedDays)
+            .WithOne(ecd => ecd.ElectricyConsumedMounth)
+            .HasForeignKey(ecd => ecd.MounthId); // Указываем внешний ключ
+
+
+        var ecmId_1 = Guid.Parse("00000000-0000-0000-0000-100000000000");
+        var ecmId_2 = Guid.Parse("00000000-0000-0000-0000-200000000000");
+        var ecmId_3 = Guid.Parse("00000000-0000-0000-0000-300000000000");
+        var currentMonth = DateTime.Now.ToString("MM-yyyy");
+        var previousMonth = DateTime.Now.AddMonths(-1).ToString("MM-yyyy");
+        var prevPreviousMonth = DateTime.Now.AddMonths(-2).ToString("MM-yyyy");
+
+        builder.HasData(new ElectricityConsumedMounthEntity
+        {
+            Id = ecmId_1,
+            Name = "Client 1",
+            PeriodDate = currentMonth,
+            Period = 544, // Часов в месяце (предполагаем полный месяц)
+            AllElectricyConsumed = 800.5 // Общее потребление
+        },
+        new ElectricityConsumedMounthEntity
+        {
+            Id = ecmId_2,
+            Name = "Client 2",
+            PeriodDate = previousMonth,
+            Period = 744, // Часов в месяце (предполагаем полный месяц)
+            AllElectricyConsumed = 1212.5 // Общее потребление
+        },
+        new ElectricityConsumedMounthEntity
+        {
+            Id = ecmId_3,
+            Name = "Client 3",
+            PeriodDate = prevPreviousMonth,
+            Period = 744, // Часов в месяце (предполагаем полный месяц)
+            AllElectricyConsumed = 730.5 // Общее потребление
+        });
     }
-}*/
+}
+
+public class ElectricityConsumedDayEntityConfiguration : IEntityTypeConfiguration<ElectricityConsumedDayEntity>
+{
+    public void Configure(EntityTypeBuilder<ElectricityConsumedDayEntity> builder)
+    {
+        builder.HasKey(ecd => ecd.Id);
+
+        builder.HasOne(ecd => ecd.ElectricyConsumedMounth)
+            .WithMany(ecm => ecm.ElectricyConsumedDays)
+            .HasForeignKey(ecd => ecd.MounthId);
+    }
+}

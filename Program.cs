@@ -32,10 +32,13 @@ services.AddAutoMapper(typeof(UserMapperProfile));
 services.AddScoped<IPasswordHasher, PasswordHasher>();
 services.AddScoped<UserService>();
 services.AddScoped<RefreshSessionService>();
+services.AddScoped<DataService>();
 services.AddScoped<IJwtProvider, JwtProvider>();
 services.AddScoped<IUserRepository, UserRepository>();
 services.AddScoped<IRefreshSessionRepository, RefreshSessionRepository>();
 services.AddScoped<IRoleRepository, RoleRepository>();
+services.AddScoped<IElectricityConsumedDayRepository, ElectricityConsumedDayRepository>();
+services.AddScoped<IElectricityConsumedMounthRepository, ElectricityConsumedMounthRepository>();
 
 services.AddApiAuthentification(configuration);
 
@@ -96,19 +99,6 @@ app.MapWhen(context => context.Request.Path.StartsWithSegments("/client"), clien
 
 app.MapGet("/test", () => "123123213213");
 
-//UserRepository.
-//users.Add(User.Create(Guid.NewGuid(), "hahahname", "123pppfdg", "email"));//User.Create(Guid.NewGuid(), "hahahname", "123pppfdg", "email")
-//System.Console.WriteLine("123123213hfdshfhdshfhsd");
-/*app.Run(async (context) =>
-{
-    context.Response.ContentType = "text/html; charset=utf-8";
-    var stringBuilder = new System.Text.StringBuilder("<table>");
 
-    foreach (var header in context.Request.Headers)
-    {
-        stringBuilder.Append($"<tr><td>{header.Key}</td><td>{header.Value}</td></tr>");
-    }
-    stringBuilder.Append("</table>");
-    await context.Response.WriteAsync(stringBuilder.ToString());
-});*/
+
 app.Run();

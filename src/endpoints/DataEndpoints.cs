@@ -3,8 +3,9 @@ public static class DataEndpoints
     public static IEndpointRouteBuilder MapDataEndpoints(this IEndpointRouteBuilder app)
     {
         var endpoints = app.MapGroup("api/data");
+        endpoints.MapGet("init", Init);// generate data dev endpoint
 
-        endpoints.MapGet("data", GetData).RequirePermissions(Permission.WATCH_DATA);
+        endpoints.MapGet("get/{periodName}", GetData).RequirePermissions(Permission.WATCH_DATA);
         //endpoints.MapGet("datalol", GetData).RequirePermissions(Permission.SEND_NOTIFICATION);
         //endpoints.MapGet("datalolkek", GetData).RequirePermissions(Permission.ADD_ACCOUNTANT);
 
@@ -14,11 +15,21 @@ public static class DataEndpoints
 
     }
 
-    private static async Task<IResult> GetData()
+    private static async Task<IResult> GetData(
+        string periodName,
+        DataService dataService
+    )
     {
-        await Task.Delay(1);
-        //await authUserService.Register(request.UserName, request.Email, request.Password);
-        return Results.Ok("confidntional data");
+        var res = await dataService.GetECMByPeriodName(periodName);
+        return Results.Ok(res);
+    }
+
+    private static async Task<IResult> Init(
+       DataService dataService
+   )
+    {
+        await dataService.InitData();
+        return Results.Ok("Success");
     }
 
 }

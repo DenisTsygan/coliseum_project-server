@@ -18,6 +18,86 @@ namespace test.Migrations
                 .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("ElectricityConsumedDayEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<double>("AllElectricyConsumed")
+                        .HasColumnType("double");
+
+                    b.Property<int>("Day")
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "periodDate");
+
+                    b.Property<string>("ElectricyConsumedHours")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("MounthId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MounthId");
+
+                    b.ToTable("ElectricityConsumedDayEntities");
+                });
+
+            modelBuilder.Entity("ElectricityConsumedMounthEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<double>("AllElectricyConsumed")
+                        .HasColumnType("double");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<decimal>("Period")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("PeriodDate")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("varchar(7)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ElectricityConsumedMounthEntities");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-100000000000"),
+                            AllElectricyConsumed = 800.5,
+                            Name = "Client 1",
+                            Period = 544m,
+                            PeriodDate = "12-2024"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-200000000000"),
+                            AllElectricyConsumed = 1212.5,
+                            Name = "Client 2",
+                            Period = 744m,
+                            PeriodDate = "11-2024"
+                        },
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-300000000000"),
+                            AllElectricyConsumed = 730.5,
+                            Name = "Client 3",
+                            Period = 744m,
+                            PeriodDate = "10-2024"
+                        });
+                });
+
             modelBuilder.Entity("PermissionEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -178,7 +258,7 @@ namespace test.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
                             Email = "admin",
-                            PasswordHash = "$2a$11$Y.mMkfe88KMpuJ7b5ryogOz53ykIVfHMn7ga7idiSW4p8ccnf2Sqe",
+                            PasswordHash = "$2a$11$XPQnQSVdM/gLV3rmmzwWyeEImsNvJKDFp.NXjxwN6ZBEpMl1zfBqS",
                             UserName = "admin"
                         });
                 });
@@ -203,6 +283,17 @@ namespace test.Migrations
                             RoleId = 1,
                             UserId = new Guid("00000000-0000-0000-0000-000000000001")
                         });
+                });
+
+            modelBuilder.Entity("ElectricityConsumedDayEntity", b =>
+                {
+                    b.HasOne("ElectricityConsumedMounthEntity", "ElectricyConsumedMounth")
+                        .WithMany("ElectricyConsumedDays")
+                        .HasForeignKey("MounthId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ElectricyConsumedMounth");
                 });
 
             modelBuilder.Entity("RolePermissionEntity", b =>
@@ -233,6 +324,11 @@ namespace test.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ElectricityConsumedMounthEntity", b =>
+                {
+                    b.Navigation("ElectricyConsumedDays");
                 });
 #pragma warning restore 612, 618
         }

@@ -12,6 +12,11 @@ public class ServiceDbContext(DbContextOptions<ServiceDbContext> options,
 
     public DbSet<RefreshSessionEntity> RefreshSessions { get; set; }
 
+    public DbSet<ElectricityConsumedMounthEntity> ElectricityConsumedMounthEntities { get; set; }
+
+    public DbSet<ElectricityConsumedDayEntity> ElectricityConsumedDayEntities { get; set; }
+
+
     //public DbSet<PermissionEntity> Permissions { get; set; }
 
     //public DbSet<Tokenntity> Tokens { get; set; }
@@ -20,11 +25,12 @@ public class ServiceDbContext(DbContextOptions<ServiceDbContext> options,
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
         modelBuilder.ApplyConfiguration(new PermissionConfiguration());
         modelBuilder.ApplyConfiguration(new RefreshSessionConfiguration());
-
-        //modelBuilder.ApplyConfiguration(new TokenConfiguration());
         modelBuilder.ApplyConfiguration(new RolePermissionConfiguration(authOptions.Value));
         modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
         modelBuilder.ApplyConfiguration(new UserConfiguration(authOptions.Value, passwordHasher));
+
+        modelBuilder.ApplyConfiguration(new ElectricityConsumedMounthEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new ElectricityConsumedDayEntityConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }
