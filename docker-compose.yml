@@ -19,3 +19,4 @@ services:
 #CREATE USER 'admin_notebook_db' IDENTIFIED BY 'poiuy228';
 #GRANT ALL PRIVILEGES ON notebook_db_v1.* TO 'admin_notebook_db';
 #FLUSH PRIVILEGES;
+# drop table NAME;

@@ -6,6 +6,8 @@ public static class DataEndpoints
         endpoints.MapGet("init", Init);// generate data dev endpoint
 
         endpoints.MapGet("get/{periodName}", GetData).RequirePermissions(Permission.WATCH_DATA);
+        endpoints.MapPost("name", RenameById).RequirePermissions(Permission.WATCH_DATA);
+
         //endpoints.MapGet("datalol", GetData).RequirePermissions(Permission.SEND_NOTIFICATION);
         //endpoints.MapGet("datalolkek", GetData).RequirePermissions(Permission.ADD_ACCOUNTANT);
 
@@ -22,6 +24,21 @@ public static class DataEndpoints
     {
         var res = await dataService.GetECMByPeriodName(periodName);
         return Results.Ok(res);
+    }
+
+    private static async Task<IResult> RenameById(
+        RenameClientRequest request,
+        DataService dataService
+    )
+    {
+        var isGuid = Guid.TryParse(request.EcmId, out var guid);
+        if (!isGuid)
+        {
+            throw new Exception("Uncorrect guid in request");
+        }
+
+        await dataService.RenameClientById(guid, request.NewName);
+        return Results.Ok("Success rename client");
     }
 
     private static async Task<IResult> Init(

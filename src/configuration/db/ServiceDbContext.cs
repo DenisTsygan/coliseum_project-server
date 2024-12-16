@@ -16,10 +16,10 @@ public class ServiceDbContext(DbContextOptions<ServiceDbContext> options,
 
     public DbSet<ElectricityConsumedDayEntity> ElectricityConsumedDayEntities { get; set; }
 
+    public DbSet<ClientEntity> Clients { get; set; }
 
     //public DbSet<PermissionEntity> Permissions { get; set; }
 
-    //public DbSet<Tokenntity> Tokens { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
@@ -31,7 +31,7 @@ public class ServiceDbContext(DbContextOptions<ServiceDbContext> options,
 
         modelBuilder.ApplyConfiguration(new ElectricityConsumedMounthEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ElectricityConsumedDayEntityConfiguration());
-
+        modelBuilder.ApplyConfiguration(new ClientEntityConfiguration());
         base.OnModelCreating(modelBuilder);
     }
 

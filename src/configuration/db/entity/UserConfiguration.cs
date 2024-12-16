@@ -108,9 +108,7 @@ public class ElectricityConsumedMounthEntityConfiguration : IEntityTypeConfigura
     public void Configure(EntityTypeBuilder<ElectricityConsumedMounthEntity> builder)
     {
         builder.HasKey(ecm => ecm.Id);
-        builder.Property(ecm => ecm.Name)
-            .IsRequired()
-            .HasMaxLength(100);
+
         builder.Property(ecm => ecm.PeriodDate)
                    .IsRequired()
                    .HasMaxLength(7); // Формат "MM-yyyy"
@@ -119,38 +117,35 @@ public class ElectricityConsumedMounthEntityConfiguration : IEntityTypeConfigura
             .WithOne(ecd => ecd.ElectricyConsumedMounth)
             .HasForeignKey(ecd => ecd.MounthId); // Указываем внешний ключ
 
+        builder.HasOne(ecm => ecm.Client)
+            .WithMany(c => c.ElectricityConsumedMounthEntities)
+            .HasForeignKey(ecm => ecm.ClientId);
 
-        var ecmId_1 = Guid.Parse("00000000-0000-0000-0000-100000000000");
-        var ecmId_2 = Guid.Parse("00000000-0000-0000-0000-200000000000");
-        var ecmId_3 = Guid.Parse("00000000-0000-0000-0000-300000000000");
+        var clientId_1 = Guid.Parse("c0000000-0000-0000-0000-000000000001");
+        var clientId_2 = Guid.Parse("c0000000-0000-0000-0000-000000000002");
+        var clientId_3 = Guid.Parse("c0000000-0000-0000-0000-000000000003");
+        var clientsId = new Guid[3] { clientId_1, clientId_2, clientId_3 };
+
         var currentMonth = DateTime.Now.ToString("MM-yyyy");
         var previousMonth = DateTime.Now.AddMonths(-1).ToString("MM-yyyy");
         var prevPreviousMonth = DateTime.Now.AddMonths(-2).ToString("MM-yyyy");
+        var mounthes = new string[3] { currentMonth, previousMonth, prevPreviousMonth };
+        Random random = new Random();
 
-        builder.HasData(new ElectricityConsumedMounthEntity
+        for (int client_count = 0; client_count < 3; client_count++)
         {
-            Id = ecmId_1,
-            Name = "Client 1",
-            PeriodDate = currentMonth,
-            Period = 544, // Часов в месяце (предполагаем полный месяц)
-            AllElectricyConsumed = 800.5 // Общее потребление
-        },
-        new ElectricityConsumedMounthEntity
-        {
-            Id = ecmId_2,
-            Name = "Client 2",
-            PeriodDate = previousMonth,
-            Period = 744, // Часов в месяце (предполагаем полный месяц)
-            AllElectricyConsumed = 1212.5 // Общее потребление
-        },
-        new ElectricityConsumedMounthEntity
-        {
-            Id = ecmId_3,
-            Name = "Client 3",
-            PeriodDate = prevPreviousMonth,
-            Period = 744, // Часов в месяце (предполагаем полный месяц)
-            AllElectricyConsumed = 730.5 // Общее потребление
-        });
+            for (int mounth_count = 0; mounth_count < 3; mounth_count++)
+            {
+                builder.HasData(new ElectricityConsumedMounthEntity
+                {
+                    Id = Guid.Parse("00000000-0000-0000-0000-" + (client_count + 1) + "" + (mounth_count + 1) + "0000000000"),
+                    ClientId = clientsId[client_count],
+                    PeriodDate = mounthes[mounth_count],
+                    Period = 30 * 24 + 0.1m,
+                    AllElectricyConsumed = Math.Round(random.NextDouble() * (2000 - 1) + 1, 2)
+                });
+            }
+        }
     }
 }
 
@@ -163,5 +158,72 @@ public class ElectricityConsumedDayEntityConfiguration : IEntityTypeConfiguratio
         builder.HasOne(ecd => ecd.ElectricyConsumedMounth)
             .WithMany(ecm => ecm.ElectricyConsumedDays)
             .HasForeignKey(ecd => ecd.MounthId);
+
+        var clientId_1 = Guid.Parse("c0000000-0000-0000-0000-000000000001");
+        var clientId_2 = Guid.Parse("c0000000-0000-0000-0000-000000000002");
+        var clientId_3 = Guid.Parse("c0000000-0000-0000-0000-000000000003");
+        var clientsId = new Guid[3] { clientId_1, clientId_2, clientId_3 };
+
+        var currentMonth = DateTime.Now.ToString("MM-yyyy");
+        var previousMonth = DateTime.Now.AddMonths(-1).ToString("MM-yyyy");
+        var prevPreviousMonth = DateTime.Now.AddMonths(-2).ToString("MM-yyyy");
+        var mounthes = new string[3] { currentMonth, previousMonth, prevPreviousMonth };
+        Random random = new Random();
+
+        for (int client_count = 0; client_count < 3; client_count++)
+        {
+            for (int mounth_count = 0; mounth_count < 3; mounth_count++)
+            {
+                var days = new List<ElectricityConsumedDayEntity>();
+                for (int count_day = 0; count_day < 30; count_day++)
+                {
+                    var hours = new double[24];
+                    for (int k = 0; k < 24; k++)
+                    {
+                        hours[k] = Math.Round(random.NextDouble() * (10 - 1) + 1, 2);
+                    }
+                    days.Add(new ElectricityConsumedDayEntity
+                    {
+                        Id = Guid.NewGuid(),
+                        Day = count_day + 1,
+                        AllElectricyConsumed = Math.Round(random.NextDouble() * (200 - 1) + 1, 2),
+                        ElectricyConsumedHours = hours,
+                        MounthId = Guid.Parse("00000000-0000-0000-0000-" + (client_count + 1) + "" + (mounth_count + 1) + "0000000000"),
+                    });
+                }
+
+                builder.HasData(days);
+                days.Clear();
+            }
+        }
+    }
+}
+
+public class ClientEntityConfiguration : IEntityTypeConfiguration<ClientEntity>
+{
+    public void Configure(EntityTypeBuilder<ClientEntity> builder)
+    {
+        builder.HasKey(ecd => ecd.Id);
+
+        builder.HasMany(c => c.ElectricityConsumedMounthEntities)
+            .WithOne(ecm => ecm.Client)
+            .HasForeignKey(ecm => ecm.ClientId);
+
+        var clientId_1 = Guid.Parse("c0000000-0000-0000-0000-000000000001");
+        var clientId_2 = Guid.Parse("c0000000-0000-0000-0000-000000000002");
+        var clientId_3 = Guid.Parse("c0000000-0000-0000-0000-000000000003");
+        builder.HasData(new ClientEntity
+        {
+            Id = clientId_1,
+            Name = "Client 1",
+        }, new ClientEntity
+        {
+            Id = clientId_2,
+            Name = "Client 2",
+        }, new ClientEntity
+        {
+            Id = clientId_3,
+            Name = "Client 3",
+        });
     }
 }
