@@ -1,3 +1,6 @@
+using System.Text;
+using Microsoft.AspNetCore.Mvc;
+
 public static class DataEndpoints
 {
     public static IEndpointRouteBuilder MapDataEndpoints(this IEndpointRouteBuilder app)
@@ -7,6 +10,10 @@ public static class DataEndpoints
 
         endpoints.MapGet("get/{periodName}", GetData).RequirePermissions(Permission.WATCH_DATA);
         endpoints.MapPost("name", RenameById).RequirePermissions(Permission.WATCH_DATA);
+
+
+        endpoints.MapGet("export-excel/{periodName}", GetDataExcel).RequirePermissions(Permission.WATCH_DATA);
+        endpoints.MapGet("export-onec/{periodName}", GetDataOneC).RequirePermissions(Permission.WATCH_DATA);
 
         //endpoints.MapGet("datalol", GetData).RequirePermissions(Permission.SEND_NOTIFICATION);
         //endpoints.MapGet("datalolkek", GetData).RequirePermissions(Permission.ADD_ACCOUNTANT);
@@ -24,6 +31,33 @@ public static class DataEndpoints
     {
         var res = await dataService.GetECMByPeriodName(periodName);
         return Results.Ok(res);
+    }
+
+    private static async Task<IResult> GetDataExcel(
+        string periodName,
+        DataService dataService
+    )
+    {
+        var fileName = $"ElectricityData_{periodName}.xlsx";
+        var fileStream = await dataService.GetFileECMByPeriodExcel(periodName);
+        return Results.File(
+            fileStream,
+            contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+    }
+
+    private static async Task<IResult> GetDataOneC(
+        string periodName,
+        DataService dataService
+    )
+    {
+        var fileName = $"ElectricityData_{periodName}.csv";
+
+        var res = await dataService.GetFileECMByPeriodCSV(periodName);
+        return Results.File(
+            Encoding.UTF8.GetBytes(res),
+            contentType: "text/csv"
+        );
     }
 
     private static async Task<IResult> RenameById(
